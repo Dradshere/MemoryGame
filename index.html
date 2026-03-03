@@ -168,12 +168,12 @@ async function check_answers() {
         document.getElementById("session_valueanswer").style.background = ("red")
     }
     if (dificulty === 1) { 
-        if (score => 4) {
+        if (score >= 4) {
             dificulty += 1;
             score = 0;
         }
     } else {
-        if (score => 9) {
+        if (score >= 9) {
             let body = document.getElementById("memorybody");
             body.style.background = "black";
             body.innerHTML = "<h1 style='color:red;font-size:3em;position:absolute;left:50%;bottom:50%;transform:translate(-50%, 50%);text-align:center;white-space: nowrap;'>YOU CHEATED, I DON'T LIKE CHEATERS!</h1>";
