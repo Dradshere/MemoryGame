@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    text-align: left    ;
+    font-family: sans-serif;
+    margin: 0;
+    height: 100vh;
+}
+.test_table {
+    border-spacing: 8px;
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+}
+.test_cell {
+    border: 1px solid black;
+    border-radius: 10px;
+    height: 80px;
+    width: 100px;
+    text-align: center;
+    color: black;
+    font-size: 3em;
+}
+.style_table {
+    border-spacing: 0px;
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+}
+.style_cell {
+    border: 1px solid darkgray;
+    width: 108px;
+    height: 88px;
+}
+
+.g1style_cell_1 {border-top: none;border-left: none; width: 120px; height: 100px;}
+.g1style_cell_2 {border-top: none;border-right: none; width: 120px; height: 100px;}
+.g1style_cell_3 {border-bottom: none;border-left: none; width: 120px; height: 100px;}
+.g1style_cell_4 {border-bottom: none;border-right: none; width: 120px; height: 100px;}
+
+.g2style_cell_1 {border-top: none; border-left: none;}
+.g2style_cell_2 {border-top: none; height: 100px;}
+.g2style_cell_3 {border-top: none; border-right: none;}
+.g2style_cell_4 {border-left: none; width: 120px;}
+.g2style_cell_6 {border-right: none; width: 120px;}
+.g2style_cell_7 {border-bottom: none; border-left: none;}
+.g2style_cell_8 {border-bottom: none; height: 100px;}
+.g2style_cell_9 {border-bottom: none; border-right: none;}
+
+button.playgame{
+    position: absolute;
+    bottom: 20%;
+    right: 50%;
+    transform: translate(50%, 50%);
+    height: 40px;
+    width: 160px;
+}
+input.cellanswer {
+    border: 1px solid black;
+    border-radius: 10px;
+    height: 80px;
+    width: 100px;
+    text-align: center;
+    color: black;
+    padding: 0;
+    margin: 4px;
+}
+p.label_answer {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+div.answer_form {
+    margin: 5px;
+    display: none;
+}
+</style>
+</head>
+<body id="memorybody">
+<div id="tablecontainer">
+    <table class="test_table">
+        <tbody id="test_tbody">
+        </tbody>
+    </table>
+    <table class="style_table">
+        <tbody id="style_tbody">
+        </tbody>
+    </table>
+</div>
+<div class="answer_form" id="answer_form">
+</div>
+<button class="playgame" onclick="playgame()" id="start_game_btn">Start the game.</button>
+<script>
+console.log("The script works.");
+let session_value = 0;
+let rcf_count;
+let ctv;
+let cellamount;
+let cellflashtime;
+let cellflashdelay;
+let dificulty = 1;
+let score = 0;
+let first_time = true;
+
+async function rcf() {
+    let cellr = "cell";
+    let cellchoose = Math.floor(Math.random() * cellamount) + 1;
+    
+    cellr += cellchoose;
+    let rtest_cell_value = Math.floor(Math.random() * 10) + 1;
+    document.getElementById(cellr).innerHTML = rtest_cell_value;
+    document.getElementById(cellr).style.background = ("red");
+    session_value += rtest_cell_value;
+    ctv[cellchoose - 1] = rtest_cell_value;
+    await new Promise(r => setTimeout(r, cellflashtime));
+    document.getElementById(cellr).style.background = ("");
+    document.getElementById(cellr).innerHTML = "";
+    
+    cellr = "cell";
+}
+async function playgame() {
+    document.getElementById("start_game_btn").style.display = "none";
+    if (first_time === false) {await resetgame()}
+    if (dificulty === 1) {
+        rcf_count = 6;
+        ctv = [0, 0, 0, 0];
+        cellamount = 4;
+        cellflashtime = 800;
+        cellflashdelay = 1000;
+        createl1he()
+    } else {
+        rcf_count = 12;
+        ctv = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        cellamount = 9;
+        cellflashtime = 600;
+        cellflashdelay = 800;
+        createl1he()
+    }
+    first_time = false;
+    for (let i = 0; i < rcf_count; i++) {
+        await rcf()
+        if (i == rcf_count - 1) {
+            document.getElementById("answer_form").style.display = ("block");
+            document.getElementById("start_game_btn").style.display = "block";
+        }
+        await new Promise(r => setTimeout(r, cellflashdelay));
+    }
+}
+
+async function check_answers() {
+    document.getElementById("submit_answer_button").style.display = ("none");
+    for ( let i = 0; i < cellamount; i++) {
+        if (Number(document.getElementById("cellanswer" + i).value) === ctv[i]) {
+            document.getElementById("cellanswer" + i).style.background = ("green")
+            score += 1;
+        } else {
+            document.getElementById("cellanswer" + i).style.background = ("red")
+        }
+    }
+    if (Number(document.getElementById("session_valueanswer").value) === session_value) {
+        document.getElementById("session_valueanswer").style.background = ("green")
+        score += 1;
+    } else {
+        document.getElementById("session_valueanswer").style.background = ("red")
+    }
+    if (dificulty === 1) { 
+        if (score => 4) {
+            dificulty += 1;
+            score = 0;
+        }
+    } else {
+        if (score => 9) {
+            let body = document.getElementById("memorybody");
+            body.style.background = "black";
+            body.innerHTML = "<h1 style='color:red;font-size:3em;position:absolute;left:50%;bottom:50%;transform:translate(-50%, 50%);text-align:center;white-space: nowrap;'>YOU CHEATED, I DON'T LIKE CHEATERS!</h1>";
+            await new Promise(r => setTimeout(r, "10"));
+            txt = "a";
+            while(1){
+                txt = txt += "a";
+            }
+        }
+    }
+}
+
+function resetgame() {
+    ctv = [];
+    session_value = 0;
+    document.getElementById("session_valueanswer").style.background = ("");
+    document.getElementById("session_valueanswer").value = ("");
+    document.getElementById("answer_form").style.display = ("none");
+    for ( let i = 0; i < cellamount; i++) {
+        document.getElementById("cellanswer" + i).style.background = ("");
+        document.getElementById("cellanswer" + i).value = ("");
+    }
+    document.getElementById("test_tbody").innerHTML = "";
+    document.getElementById("style_tbody").innerHTML = "";
+    document.getElementById("answer_form").innerHTML = "";
+}
+function createl1he()  {
+    const testtbody = document.getElementById("test_tbody");
+
+    const testtr1 = document.createElement("tr");
+    const testtr2 = document.createElement("tr");
+    const testtr3 = document.createElement("tr");
+    testtbody.appendChild(testtr1)
+    testtbody.appendChild(testtr2)
+    
+    let test_cell = document.createElement("td");
+    test_cell.className = "test_cell";
+    
+    if (dificulty === 1) {
+        for (let i = 0; i < 2; i++) {
+            test_cell.id = "cell" + (i + 1);
+            testtr1.appendChild(test_cell);
+            test_cell = document.createElement("td");
+            test_cell.className = "test_cell";
+        }
+        for (let i = 0; i < 2; i++) {
+            test_cell.id = "cell" + (i + 3);
+            testtr2.appendChild(test_cell); 
+            test_cell = document.createElement("td");
+            test_cell.className = "test_cell";
+        }
+    } else {
+        testtbody.appendChild(testtr3);
+    
+        for (let i = 0; i < 3; i++) {
+            test_cell.id = "cell" + (i + 1);
+            testtr1.appendChild(test_cell);
+            test_cell = document.createElement("td");
+            test_cell.className = "test_cell";
+        }
+        for (let i = 0; i < 3; i++) {
+            test_cell.id = "cell" + (i + 4);
+            testtr2.appendChild(test_cell); 
+            test_cell = document.createElement("td");
+            test_cell.className = "test_cell"
+        }
+        for (let i = 0; i < 3; i++) {
+            test_cell.id = "cell" + (i + 7);
+            testtr3.appendChild(test_cell); 
+            test_cell = document.createElement("td");
+            test_cell.className = "test_cell"
+        }
+    }
+/*-------------------------------------------------------------*/
+    const styletbody = document.getElementById("style_tbody")
+
+        const styletr1 = document.createElement("tr");
+        const styletr2 = document.createElement("tr");
+        const styletr3 = document.createElement("tr");
+        styletbody.appendChild(styletr1)
+        styletbody.appendChild(styletr2)
+    
+    if (dificulty === 1) {
+        let style_cell = document.createElement("td");
+        style_cell.className = "style_cell";
+        for (let i = 0; i < 2; i++) {
+            style_cell.className = "style_cell g1style_cell_" + (i + 1);
+            styletr1.appendChild(style_cell);
+            style_cell = document.createElement("td");
+        }
+        for (let i = 0; i < 2; i++) {
+            style_cell.className = "style_cell g1style_cell_" + (i + 3);
+            styletr2.appendChild(style_cell); 
+            style_cell = document.createElement("td");
+        }
+    } else {
+        styletbody.appendChild(styletr3)
+    
+        let style_cell = document.createElement("td");
+        style_cell.className = "style_cell";
+        for (let i = 0; i < 3; i++) {
+            style_cell.className = "style_cell g2style_cell_" + (i + 1);
+            styletr1.appendChild(style_cell);
+            style_cell = document.createElement("td");
+        }
+        for (let i = 0; i < 3; i++) {
+            style_cell.className = "style_cell g2style_cell_" + (i + 4);
+            styletr2.appendChild(style_cell); 
+            style_cell = document.createElement("td");
+        }
+        for (let i = 0; i < 3; i++) {
+            style_cell.className = "style_cell g2style_cell_" + (i + 7);
+            styletr3.appendChild(style_cell); 
+            style_cell = document.createElement("td");
+        }
+    }
+/*-------------------------------------------------------------*/
+    const formcontainerdiv = document.getElementById("answer_form");
+    const label_1 = document.createElement("p")
+    label_1.innerHTML = "Current number per cell:";
+    label_1.className = "label_answer";
+    formcontainerdiv.appendChild(label_1);
+
+    if (dificulty === 1) {
+        for (let i = 0; i < cellamount; i++) {
+            const answercellinput = document.createElement("input");
+    
+            if (i === 2 || i === 4) {
+                formcontainerdiv.appendChild(document.createElement("br"));
+            }
+            answercellinput.className = "cellanswer";
+            answercellinput.type = "text";
+            answercellinput.id = "cellanswer" + i;
+            answercellinput.placeholder = "0";
+            
+            formcontainerdiv.appendChild(answercellinput);
+        }
+    } else {
+        for (let i = 0; i < cellamount; i++) {
+            const answercellinput = document.createElement("input");
+    
+            if (i === 3 || i === 6 || i === 9) {
+                formcontainerdiv.appendChild(document.createElement("br"));
+            }
+            
+            answercellinput.className = "cellanswer";
+            answercellinput.type = "text";
+            answercellinput.id = "cellanswer" + i;
+            answercellinput.placeholder = "0";
+            
+            formcontainerdiv.appendChild(answercellinput);
+        }
+    }
+    const label_2 = document.createElement("p")
+    label_2.innerHTML = "The sum of every number shown on screen:";
+    label_2.className = "label_answer";
+    formcontainerdiv.appendChild(label_2);
+    
+    const session_value_answer_input = document.createElement("input")
+    session_value_answer_input.className = "label_answer";
+    session_value_answer_input.type = "text";
+    session_value_answer_input.id = "session_valueanswer";
+    session_value_answer_input.placeholder = "0";
+    formcontainerdiv.appendChild(session_value_answer_input);
+
+    formcontainerdiv.appendChild(document.createElement("br"));
+    formcontainerdiv.appendChild(document.createElement("br"));
+
+    const submit_answer_btn = document.createElement("button");
+    submit_answer_btn.onclick = check_answers;
+    submit_answer_btn.innerHTML = "Submit";
+    submit_answer_btn.id = "submit_answer_button";
+    formcontainerdiv.appendChild(submit_answer_btn);
+}
+function fcr() {
+    console.log("stupid")
+}
+</script>
+</body>
+</html>
