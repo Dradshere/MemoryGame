@@ -78,17 +78,9 @@ div.answer_form {
     margin: 5px;
     display: none;
 }
-h1.level_indicator {
-    position: absolute;
-    bottom: 80%;
-    right: 50%;
-    transform: translate(50%, 50%);
-    text-align: center;
-}
 </style>
 </head>
 <body id="memorybody">
-<h1 class="level_indicator" id="lvlindicator"></h1>
 <div id="tablecontainer">
     <table class="test_table">
         <tbody id="test_tbody">
@@ -110,11 +102,9 @@ let ctv;
 let cellamount;
 let cellflashtime;
 let cellflashdelay;
-let difficulty = 1;
-let first_time = true;
-let ask_session_value;
+let dificulty = 1;
 let score = 0;
-let lose_count = 0;
+let first_time = true;
 
 async function rcf() {
     let cellr = "cell";
@@ -135,9 +125,21 @@ async function rcf() {
 async function playgame() {
     document.getElementById("start_game_btn").style.display = "none";
     if (first_time === false) {await resetgame()}
-    await arrange_difficulty_settings();
-    createl1he()
-    document.getElementById("lvlindicator").innerHTML = ("Level: " + difficulty);
+    if (dificulty === 1) {
+        rcf_count = 6;
+        ctv = [0, 0, 0, 0];
+        cellamount = 4;
+        cellflashtime = 800;
+        cellflashdelay = 1000;
+        createl1he()
+    } else {
+        rcf_count = 18;
+        ctv = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        cellamount = 9;
+        cellflashtime = 400;
+        cellflashdelay = 700;
+        createl1he()
+    }
     first_time = false;
     for (let i = 0; i < rcf_count; i++) {
         await rcf()
@@ -159,58 +161,36 @@ async function check_answers() {
             document.getElementById("cellanswer" + i).style.background = ("red")
         }
     }
-    if (ask_session_value === true) {
-        if (Number(document.getElementById("session_valueanswer").value) === session_value) {
-            document.getElementById("session_valueanswer").style.background = ("green")
-            score += 1;
-        } else {
-            document.getElementById("session_valueanswer").style.background = ("red")
-        }
+    if (Number(document.getElementById("session_valueanswer").value) === session_value) {
+        document.getElementById("session_valueanswer").style.background = ("green")
+        score += 1;
+    } else {
+        document.getElementById("session_valueanswer").style.background = ("red")
     }
-/*------------------------------------------------------------------------------------------------*/
-    if (cellamount === 4) { 
-        if (difficulty === 1 && score === 4) {
-            difficulty = 2;
+    if (dificulty === 1) { 
+        if (score >= 4) {
+            dificulty += 1;
             score = 0;
-            lose_count = 0;
-        } else if ((difficulty === 3 || difficulty === 2) && score === 5) {
-            difficulty++;
-            score = 0;
-            lose_count = 0;
-        } else {lose_count++;}
-    } else if (cellamount === 9) {
-        if (difficulty === 4 && score === 9) {
-            difficulty++;
-            score = 0;
-            lose_count = 0;
-        } else if (difficulty === 5 && score === 10) {
-            lose_count = 0;
+        }
+    } else {
+        if (score >= 9) {
             let body = document.getElementById("memorybody");
             body.style.background = "black";
             body.innerHTML = "<h1 style='color:red;font-size:3em;position:absolute;left:50%;bottom:50%;transform:translate(-50%, 50%);text-align:center;white-space: nowrap;'>YOU CHEATED, I DON'T LIKE CHEATERS!</h1>";
-            await new Promise(r => setTimeout(r, "100"));
+            await new Promise(r => setTimeout(r, "10"));
             txt = "a";
             while(1){
-                txt = txt += "aa";
+                txt = txt += "a";
             }
-        } else {lose_count++;}
-    }
-    if (lose_count === 3 && difficulty !== 1) {
-        difficulty -= 1;
-        lose_count = 0;
-    } else if (lose_count === 3) {
-        lose_count = 0;
-        alert("noob")
+        }
     }
 }
 
 function resetgame() {
     ctv = [];
     session_value = 0;
-    if (ask_session_value === true) {
-        document.getElementById("session_valueanswer").style.background = ("");
-        document.getElementById("session_valueanswer").value = ("");
-    }
+    document.getElementById("session_valueanswer").style.background = ("");
+    document.getElementById("session_valueanswer").value = ("");
     document.getElementById("answer_form").style.display = ("none");
     for ( let i = 0; i < cellamount; i++) {
         document.getElementById("cellanswer" + i).style.background = ("");
@@ -232,7 +212,7 @@ function createl1he()  {
     let test_cell = document.createElement("td");
     test_cell.className = "test_cell";
     
-    if (cellamount === 4) {
+    if (dificulty === 1) {
         for (let i = 0; i < 2; i++) {
             test_cell.id = "cell" + (i + 1);
             testtr1.appendChild(test_cell);
@@ -245,7 +225,7 @@ function createl1he()  {
             test_cell = document.createElement("td");
             test_cell.className = "test_cell";
         }
-    } else if (cellamount === 9) {
+    } else {
         testtbody.appendChild(testtr3);
     
         for (let i = 0; i < 3; i++) {
@@ -276,7 +256,7 @@ function createl1he()  {
         styletbody.appendChild(styletr1)
         styletbody.appendChild(styletr2)
     
-    if (cellamount === 4) {
+    if (dificulty === 1) {
         let style_cell = document.createElement("td");
         style_cell.className = "style_cell";
         for (let i = 0; i < 2; i++) {
@@ -289,7 +269,7 @@ function createl1he()  {
             styletr2.appendChild(style_cell); 
             style_cell = document.createElement("td");
         }
-    } else if (cellamount === 9) {
+    } else {
         styletbody.appendChild(styletr3)
     
         let style_cell = document.createElement("td");
@@ -317,7 +297,7 @@ function createl1he()  {
     label_1.className = "label_answer";
     formcontainerdiv.appendChild(label_1);
 
-    if (cellamount === 4) {
+    if (dificulty === 1) {
         for (let i = 0; i < cellamount; i++) {
             const answercellinput = document.createElement("input");
     
@@ -331,7 +311,7 @@ function createl1he()  {
             
             formcontainerdiv.appendChild(answercellinput);
         }
-    } else if (cellamount === 9) {
+    } else {
         for (let i = 0; i < cellamount; i++) {
             const answercellinput = document.createElement("input");
     
@@ -347,19 +327,17 @@ function createl1he()  {
             formcontainerdiv.appendChild(answercellinput);
         }
     }
-    if (ask_session_value === true) {
-        const label_2 = document.createElement("p")
-        label_2.innerHTML = "The sum of every number shown on screen:";
-        label_2.className = "label_answer";
-        formcontainerdiv.appendChild(label_2);
-        
-        const session_value_answer_input = document.createElement("input")
-        session_value_answer_input.className = "label_answer";
-        session_value_answer_input.type = "text";
-        session_value_answer_input.id = "session_valueanswer";
-        session_value_answer_input.placeholder = "0";
-        formcontainerdiv.appendChild(session_value_answer_input);
-    }
+    const label_2 = document.createElement("p")
+    label_2.innerHTML = "The sum of every number shown on screen:";
+    label_2.className = "label_answer";
+    formcontainerdiv.appendChild(label_2);
+    
+    const session_value_answer_input = document.createElement("input")
+    session_value_answer_input.className = "label_answer";
+    session_value_answer_input.type = "text";
+    session_value_answer_input.id = "session_valueanswer";
+    session_value_answer_input.placeholder = "0";
+    formcontainerdiv.appendChild(session_value_answer_input);
 
     formcontainerdiv.appendChild(document.createElement("br"));
     formcontainerdiv.appendChild(document.createElement("br"));
@@ -369,44 +347,6 @@ function createl1he()  {
     submit_answer_btn.innerHTML = "Submit";
     submit_answer_btn.id = "submit_answer_button";
     formcontainerdiv.appendChild(submit_answer_btn);
-}
-function arrange_difficulty_settings() {
-    if (difficulty === 1) {
-        rcf_count = 6;
-        ctv = [0, 0, 0, 0];
-        cellamount = 4;
-        cellflashtime = 800;
-        cellflashdelay = 1000;
-        ask_session_value = false;
-    } else if (difficulty === 2){
-        rcf_count = 8;
-        ctv = [0, 0, 0, 0];
-        cellamount = 4;
-        cellflashtime = 700;
-        cellflashdelay = 900;
-        ask_session_value = true;
-    } else if (difficulty === 3) {
-        rcf_count = 12;
-        ctv = [0, 0, 0, 0];
-        cellamount = 4;
-        cellflashtime = 600;
-        cellflashdelay = 800;
-        ask_session_value = true;
-    } else if (difficulty === 4) {
-        rcf_count = 10;
-        ctv = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-        cellamount = 9;
-        cellflashtime = 600;
-        cellflashdelay = 800;
-        ask_session_value = false;
-    } else if (difficulty === 5) {
-        rcf_count = 24;
-        ctv = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-        cellamount = 9;
-        cellflashtime = 500;
-        cellflashdelay = 650;
-        ask_session_value = true;
-    }
 }
 function fcr() {
     console.log("stupid")
