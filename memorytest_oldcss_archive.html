@@ -9,7 +9,7 @@ body {
     height: 100vh;
 }
 .test_table {
-    border-spacing: 16px;
+    border-spacing: 8px;
     position: absolute;
     left: 50%;
     bottom: 50%;
@@ -17,12 +17,12 @@ body {
 }
 .test_cell {
     border: 1px solid black;
-    border-radius: 20px;
-    height: 160px;
-    width: 200px;
+    border-radius: 10px;
+    height: 80px;
+    width: 100px;
     text-align: center;
     color: black;
-    font-size: 8em;
+    font-size: 3em;
 }
 .style_table {
     border-spacing: 0px;
@@ -33,27 +33,27 @@ body {
 }
 .style_cell {
     border: 1px solid darkgray;
-    width: 216px;
-    height: 176px;
+    width: 108px;
+    height: 88px;
 }
 
-.g1style_cell_1 {border-top: none;border-left: none; width: 220px; height: 180px;}
-.g1style_cell_2 {border-top: none;border-right: none; width: 220px; height: 180px;}
-.g1style_cell_3 {border-bottom: none;border-left: none; width: 220px; height: 180px;}
-.g1style_cell_4 {border-bottom: none;border-right: none; width: 220px; height: 180px;}
+.g1style_cell_1 {border-top: none;border-left: none; width: 120px; height: 100px;}
+.g1style_cell_2 {border-top: none;border-right: none; width: 120px; height: 100px;}
+.g1style_cell_3 {border-bottom: none;border-left: none; width: 120px; height: 100px;}
+.g1style_cell_4 {border-bottom: none;border-right: none; width: 120px; height: 100px;}
 
 .g2style_cell_1 {border-top: none; border-left: none;}
-.g2style_cell_2 {border-top: none; height: 180px;}
+.g2style_cell_2 {border-top: none; height: 100px;}
 .g2style_cell_3 {border-top: none; border-right: none;}
-.g2style_cell_4 {border-left: none; width: 220px;}
-.g2style_cell_6 {border-right: none; width: 220px;}
+.g2style_cell_4 {border-left: none; width: 120px;}
+.g2style_cell_6 {border-right: none; width: 120px;}
 .g2style_cell_7 {border-bottom: none; border-left: none;}
-.g2style_cell_8 {border-bottom: none; height: 180px;}
+.g2style_cell_8 {border-bottom: none; height: 100px;}
 .g2style_cell_9 {border-bottom: none; border-right: none;}
 
 button.playgame{
     position: absolute;
-    bottom: 8%;
+    bottom: 20%;
     right: 50%;
     transform: translate(50%, 50%);
     height: 40px;
@@ -80,7 +80,7 @@ div.answer_form {
 }
 h1.level_indicator {
     position: absolute;
-    bottom: 89%;
+    bottom: 80%;
     right: 50%;
     transform: translate(50%, 50%);
     text-align: center;
@@ -206,6 +206,7 @@ async function check_answers() {
 }
 
 function resetgame() {
+    score = 0;
     ctv = [];
     session_value = 0;
     if (ask_session_value === true) {
@@ -408,6 +409,9 @@ function arrange_difficulty_settings() {
         cellflashdelay = 650;
         ask_session_value = true;
     }
+}
+function fcr() {
+    console.log("stupid")
 }
 </script>
 </body>
