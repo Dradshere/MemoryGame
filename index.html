@@ -150,6 +150,7 @@ async function playgame() {
 }
 
 async function check_answers() {
+    score = 0;
     document.getElementById("submit_answer_button").style.display = ("none");
     for ( let i = 0; i < cellamount; i++) {
         if (Number(document.getElementById("cellanswer" + i).value) === ctv[i]) {
@@ -205,6 +206,7 @@ async function check_answers() {
 }
 
 function resetgame() {
+    score = 0;
     ctv = [];
     session_value = 0;
     if (ask_session_value === true) {
