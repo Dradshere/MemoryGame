@@ -85,9 +85,38 @@ h1.level_indicator {
     transform: translate(50%, 50%);
     text-align: center;
 }
+.descriptiondiv {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+.gamedescription {
+    margin: 0px;
+}
+.descriptiondiv {display: none;}
+.infoicon {
+    font-size: 1.5em;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+.infoicon:hover {display:none;}
+.infoicon:hover + .descriptiondiv {display: block;}
 </style>
 </head>
 <body id="memorybody">
+<div class="infoicon">ⓘ</div>
+<div class="descriptiondiv" >
+    <p>How does this game work?</p>
+    <p class="gamedescription">
+        Its simple, Whenever a cell flashes red remember what number was in that cell.<br>
+        But when the same cell flashes red again, you can forget the first one.<br><br>
+        In level 2 you'll find that theres another question:<br>
+        "The sum of every number shown on screen:"<br>
+        There you'll need to input every number you have seen that round.<br> 
+        <strong>Even if that number would have been flashed again.</strong>
+    </p>
+</div>
 <h1 class="level_indicator" id="lvlindicator"></h1>
 <div id="tablecontainer">
     <table class="test_table">
